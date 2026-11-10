@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+    <title>الممر المصري ثلاثي الأبعاد</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <canvas id="cv"></canvas>
+
+    <div id="hud">
+        <button class="i" id="mn">☰</button>
+        <div class="m">
+            <div id="pn"></div>
+            <div id="st"></div>
+        </div>
+        <button class="i" id="rc">⟲</button>
+        <button class="i" id="sn">🔊</button>
+    </div>
+
+    <div id="bar">
+        <button class="b" id="mv">تحرّك</button>
+        <button class="b" id="wl">ضع جداراً</button>
+        <button class="b" id="ok">تأكيد</button>
+        <button class="b s" id="ro">تدوير</button>
+        <button class="b s" id="no">إلغاء</button>
+    </div>
+
+    <div id="toast"></div>
+
+    <div id="win" class="ov">
+        <div class="card">
+            <div id="wt"></div>
+            <button class="b" id="again">العب مجدداً</button>
+        </div>
+    </div>
+
+    <div id="netModal">
+        <div class="card">
+            <h1>اللعب بين جهازين (بدون إنترنت)</h1>
+            <div id="netStatus" class="net-status">الحالة: غير متصل</div>
+            <div style="width:100%; text-align:right;">
+                <label>1. كود الاتصال:</label>
+                <button class="b" id="btnCreateOffer" style="width:100%; min-height:42px; font-size:16px; margin-bottom:5px;">إنشاء كود المضيف (Host)</button>
+                <div id="qrBox" style="display:none; background:#fff; padding:10px; border-radius:10px; margin:6px auto; width:fit-content;"></div>
+                <textarea id="localCode" readonly onclick="this.select()" placeholder="أو انسخ الكود من هنا..."></textarea>
+                <button class="b s" id="btnCopyLocal" style="width:100%; min-height:38px; font-size:15px; margin-top:4px; margin-bottom:10px;">نسخ الكود</button>
+
+                <button class="b" id="btnScan" style="width:100%; min-height:46px; font-size:17px; margin-bottom:8px;">📷 مسح QR الطرف الآخر</button>
+                <label style="margin-top:8px; display:block;">أو لصق كود الطرف الآخر:</label>
+                <textarea id="remoteCode" placeholder="الصق الكود هنا..."></textarea>
+                <button class="b s" id="btnPasteRemote" style="width:100%; min-height:38px; font-size:15px; margin-top:4px; margin-bottom:5px;">لصق من الحافظة</button>
+                <button class="b s" id="btnConnect" style="width:100%; min-height:42px; font-size:16px; margin-top:5px;">ربط واتصال</button>
+            </div>
+            <button class="b s" id="btnCloseNet" style="width:100%; min-height:42px; font-size:16px; margin-top:10px;">إلغاء والعودة</button>
+        </div>
+    </div>
+
+    <div id="scanner" style="display:none; position:fixed; inset:0; z-index:50; background:#000; flex-direction:column; align-items:center; justify-content:center; gap:14px;">
+        <video id="scanVid" playsinline muted style="width:100%; max-height:70%; object-fit:cover;"></video>
+        <button class="b s" id="scanCancel" style="width:200px;">إلغاء</button>
+    </div>
+
+    <div id="onlineModal" style="display:none; position:fixed; inset:0; background:rgba(20,12,4,.95); z-index:20; justify-content:center; align-items:center; padding:15px; overflow-y:auto;">
+        <div class="card" style="background:#25180c; border:2px solid var(--gold); padding:20px; border-radius:14px; max-height:90vh; overflow-y:auto;">
+            <h1>اللعب أونلاين</h1>
+            <div id="onStatus" class="net-status">الحالة: غير متصل</div>
+            <div style="width:100%; text-align:right;">
+                <label>عنوان السيرفر:</label>
+                <input id="srvUrl" placeholder="https://اسم-تطبيقك.onrender.com" style="width:100%; min-height:44px; border-radius:10px; border:2px solid var(--gold); background:#2a1c0a; color:var(--ink); font-size:15px; text-align:center; direction:ltr; margin-bottom:10px;">
+                <button class="b" id="onCreate" style="width:100%; min-height:42px; font-size:16px; margin-bottom:8px;">إنشاء غرفة (مضيف)</button>
+                <label>كود الغرفة:</label>
+                <div id="roomCodeBox" style="font-size:34px; letter-spacing:8px; text-align:center; color:var(--gold); direction:ltr; min-height:46px;">----</div>
+                <button class="b s" id="onCopy" style="width:100%; min-height:38px; font-size:15px; margin-bottom:14px;">نسخ الكود</button>
+                <label>أو انضم بكود غرفة:</label>
+                <input id="joinCode" maxlength="4" placeholder="ABCD" style="width:100%; min-height:46px; border-radius:10px; border:2px solid var(--gold); background:#2a1c0a; color:var(--ink); font-size:22px; text-align:center; text-transform:uppercase; direction:ltr;">
+                <button class="b s" id="onJoin" style="width:100%; min-height:42px; font-size:16px; margin-top:6px;">انضمام</button>
+            </div>
+            <button class="b s" id="onClose" style="width:100%; min-height:42px; font-size:16px; margin-top:10px;">إلغاء والعودة</button>
+        </div>
+    </div>
+
+    <div id="menu" class="ov">
+        <div class="card">
+            <h1>الممر المصري</h1>
+            <h2>لعبة ابو وعد و عهد3D</h2>
+            <label>عدد اللاعبين</label>
+            <div class="seg" id="npb">
+                <button data-v="2" class="on">2</button>
+                <button data-v="3">3</button>
+                <button data-v="4">4</button>
+            </div>
+            <label>حجم اللوحة (أي رقم فردي)</label>
+            <div class="seg">
+                <button id="nm">−</button>
+                <span id="nv">9×9</span>
+                <button id="npp">+</button>
+            </div>
+            <label>نوع الفوز</label>
+            <select id="wm">
+                <option value="1">1 — الوصول لبيت الخصم</option>
+                <option value="2">2 — سباق للجهة المقابلة</option>
+                <option value="3">3 — نجمة ثابتة في المنتصف</option>
+                <option value="4">4 — نجمة متحركة</option>
+            </select>
+            <label>شخصية الكمبيوتر</label>
+            <select id="ps">
+                <option value="bal">متوازن</option>
+                <option value="fast">سريع</option>
+                <option value="def">دفاعي</option>
+                <option value="agg">عدواني</option>
+                <option value="sly">ماكر</option>
+                <option value="mix">عشوائي</option>
+            </select>
+            <label>عدد الجدران لكل لاعب</label>
+            <input id="wn" type="number" min="1" max="99999" value="10" inputmode="numeric">
+            <button class="b" id="m1">فردي ضد الكمبيوتر</button>
+            <button class="b" id="m2">لعب محلي على جهاز واحد</button>
+            <button class="b s" id="m3">لعب بين جهازين (بدون إنترنت)</button>
+            <button class="b s" id="m4">🌐 لعب أونلاين (غرفة بكود)</button>
+        </div>
+    </div>
+
+    <script src="three.min.js"></script>
+    <script src="howler.min.js"></script>
+    <script src="qrcode.min.js"></script>
+    <script src="script.js"></script>
+</body>
+</html>
