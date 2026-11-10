@@ -1,0 +1,11 @@
+{
+  "background_color": "#ffffff",
+  "dir": "ltr",
+  "display": "standalone",
+  "name": "Quoridor Elmasry",
+  "orientation": "any",
+  "scope": "/",
+  "short_name": "Quoridor Elmasry",
+  "start_url": "/",
+  "theme_color": "#ffffff"
+}
