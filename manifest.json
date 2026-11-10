@@ -8,4 +8,5 @@
   "short_name": "Quoridor Elmasry",
   "start_url": "/",
   "theme_color": "#ffffff"
+  "icons": [{"src": " corridor_almasry_reference.png "، "sizes": "512x512", "type": "image/png"}]
 }
